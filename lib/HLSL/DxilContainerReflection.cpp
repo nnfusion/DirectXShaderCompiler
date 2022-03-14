@@ -35,12 +35,13 @@
 #include "llvm/ADT/SetVector.h"
 
 #include "dxc/dxcapi.h"
+#include "dxc/DxilContainer/DxilRuntimeReflection.h"
 
 #ifdef _WIN32
 #include "d3d12shader.h" // for compatibility
 #include "d3d11shader.h" // for compatibility
 #else
-#include "dxc/dxc_d3d12shader.h"
+#include "directx/d3d12shader.h"
 
 typedef struct _D3D11_SHADER_INPUT_BIND_DESC
 {
@@ -54,10 +55,10 @@ typedef struct _D3D11_SHADER_INPUT_BIND_DESC
     D3D_SRV_DIMENSION           Dimension;      // Dimension (if texture)
     UINT                        NumSamples;     // Number of samples (0 if not MS texture)
 } D3D11_SHADER_INPUT_BIND_DESC;
+CROSS_PLATFORM_UUIDOF(ID3D12ShaderReflection,"5A58797D-A72C-478D-8BA2-EFC6B0EFE88E");
+CROSS_PLATFORM_UUIDOF(ID3D12LibraryReflection,"8E349D19-54DB-4A56-9DC9-119D87BDB804");
 
 #endif
-
-#include "dxc/DxilContainer/DxilRuntimeReflection.h"
 
 // Remove this workaround once newer version of d3dcommon.h can be compiled against
 #define ADD_16_64_BIT_TYPES
