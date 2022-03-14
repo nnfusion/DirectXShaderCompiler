@@ -36,9 +36,12 @@
 
 #include "dxc/dxcapi.h"
 
-#ifdef LLVM_ON_WIN32
+#ifdef _WIN32
 #include "d3d12shader.h" // for compatibility
 #include "d3d11shader.h" // for compatibility
+#else
+#include "dxc/dxc_d3d12shader.h"
+#endif
 
 #include "dxc/DxilContainer/DxilRuntimeReflection.h"
 
@@ -2390,7 +2393,8 @@ HRESULT DxilModuleReflection::_GetResourceBindingDesc(UINT ResourceIndex,
   IFRBOOL(pDesc != nullptr, E_INVALIDARG);
   IFRBOOL(ResourceIndex < m_Resources.size(), E_INVALIDARG);
   if (api != PublicAPI::D3D12) {
-    memcpy(pDesc, &m_Resources[ResourceIndex], sizeof(D3D11_SHADER_INPUT_BIND_DESC));
+    // memcpy(pDesc, &m_Resources[ResourceIndex], sizeof(D3D11_SHADER_INPUT_BIND_DESC));
+    return E_INVALIDARG;
   }
   else {
     *pDesc = m_Resources[ResourceIndex];
@@ -2473,7 +2477,8 @@ HRESULT DxilModuleReflection::_GetResourceBindingDescByName(LPCSTR Name,
   for (UINT i = 0; i < m_Resources.size(); i++) {
     if (strcmp(m_Resources[i].Name, Name) == 0) {
       if (api != PublicAPI::D3D12) {
-        memcpy(pDesc, &m_Resources[i], sizeof(D3D11_SHADER_INPUT_BIND_DESC));
+        // memcpy(pDesc, &m_Resources[i], sizeof(D3D11_SHADER_INPUT_BIND_DESC));
+        return E_INVALIDARG;
       }
       else {
         *pDesc = m_Resources[i];
@@ -2819,11 +2824,3 @@ ID3D12FunctionReflection *DxilLibraryReflection::GetFunctionByIndex(INT Function
     return &g_InvalidFunction;
   return m_FunctionVector[FunctionIndex];
 }
-
-#else // LLVM_ON_WIN32
-
-void hlsl::CreateDxcContainerReflection(IDxcContainerReflection **ppResult) {
-  *ppResult = nullptr;
-}
-
-#endif // LLVM_ON_WIN32
