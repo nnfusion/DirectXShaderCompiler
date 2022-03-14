@@ -41,6 +41,20 @@
 #include "d3d11shader.h" // for compatibility
 #else
 #include "dxc/dxc_d3d12shader.h"
+
+typedef struct _D3D11_SHADER_INPUT_BIND_DESC
+{
+    LPCSTR                      Name;           // Name of the resource
+    D3D_SHADER_INPUT_TYPE       Type;           // Type of resource (e.g. texture, cbuffer, etc.)
+    UINT                        BindPoint;      // Starting bind point
+    UINT                        BindCount;      // Number of contiguous bind points (for arrays)
+    
+    UINT                        uFlags;         // Input binding flags
+    D3D_RESOURCE_RETURN_TYPE    ReturnType;     // Return type (if texture)
+    D3D_SRV_DIMENSION           Dimension;      // Dimension (if texture)
+    UINT                        NumSamples;     // Number of samples (0 if not MS texture)
+} D3D11_SHADER_INPUT_BIND_DESC;
+
 #endif
 
 #include "dxc/DxilContainer/DxilRuntimeReflection.h"
@@ -2394,7 +2408,6 @@ HRESULT DxilModuleReflection::_GetResourceBindingDesc(UINT ResourceIndex,
   IFRBOOL(ResourceIndex < m_Resources.size(), E_INVALIDARG);
   if (api != PublicAPI::D3D12) {
     memcpy(pDesc, &m_Resources[ResourceIndex], sizeof(D3D11_SHADER_INPUT_BIND_DESC));
-    return E_INVALIDARG;
   }
   else {
     *pDesc = m_Resources[ResourceIndex];
@@ -2478,7 +2491,6 @@ HRESULT DxilModuleReflection::_GetResourceBindingDescByName(LPCSTR Name,
     if (strcmp(m_Resources[i].Name, Name) == 0) {
       if (api != PublicAPI::D3D12) {
         memcpy(pDesc, &m_Resources[i], sizeof(D3D11_SHADER_INPUT_BIND_DESC));
-        return E_INVALIDARG;
       }
       else {
         *pDesc = m_Resources[i];

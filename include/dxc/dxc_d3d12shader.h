@@ -913,19 +913,6 @@ typedef struct _D3D12_PARAMETER_DESC
     UINT                        FirstOutComponent;  // The first output register component for this parameter.
 } D3D12_PARAMETER_DESC;
 
-typedef struct _D3D11_SHADER_INPUT_BIND_DESC
-{
-    LPCSTR                      Name;           // Name of the resource
-    D3D_SHADER_INPUT_TYPE       Type;           // Type of resource (e.g. texture, cbuffer, etc.)
-    UINT                        BindPoint;      // Starting bind point
-    UINT                        BindCount;      // Number of contiguous bind points (for arrays)
-    
-    UINT                        uFlags;         // Input binding flags
-    D3D_RESOURCE_RETURN_TYPE    ReturnType;     // Return type (if texture)
-    D3D_SRV_DIMENSION           Dimension;      // Dimension (if texture)
-    UINT                        NumSamples;     // Number of samples (0 if not MS texture)
-} D3D11_SHADER_INPUT_BIND_DESC;
-
 #define DECLSPEC_NOTHROW   __declspec(nothrow)
 
 #ifdef COM_STDMETHOD_CAN_THROW
