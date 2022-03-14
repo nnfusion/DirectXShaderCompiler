@@ -2393,7 +2393,7 @@ HRESULT DxilModuleReflection::_GetResourceBindingDesc(UINT ResourceIndex,
   IFRBOOL(pDesc != nullptr, E_INVALIDARG);
   IFRBOOL(ResourceIndex < m_Resources.size(), E_INVALIDARG);
   if (api != PublicAPI::D3D12) {
-    // memcpy(pDesc, &m_Resources[ResourceIndex], sizeof(D3D11_SHADER_INPUT_BIND_DESC));
+    memcpy(pDesc, &m_Resources[ResourceIndex], sizeof(D3D11_SHADER_INPUT_BIND_DESC));
     return E_INVALIDARG;
   }
   else {
@@ -2477,7 +2477,7 @@ HRESULT DxilModuleReflection::_GetResourceBindingDescByName(LPCSTR Name,
   for (UINT i = 0; i < m_Resources.size(); i++) {
     if (strcmp(m_Resources[i].Name, Name) == 0) {
       if (api != PublicAPI::D3D12) {
-        // memcpy(pDesc, &m_Resources[i], sizeof(D3D11_SHADER_INPUT_BIND_DESC));
+        memcpy(pDesc, &m_Resources[i], sizeof(D3D11_SHADER_INPUT_BIND_DESC));
         return E_INVALIDARG;
       }
       else {
