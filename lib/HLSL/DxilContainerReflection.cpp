@@ -35,12 +35,30 @@
 #include "llvm/ADT/SetVector.h"
 
 #include "dxc/dxcapi.h"
+#include "dxc/DxilContainer/DxilRuntimeReflection.h"
 
-#ifdef LLVM_ON_WIN32
+#ifdef _WIN32
 #include "d3d12shader.h" // for compatibility
 #include "d3d11shader.h" // for compatibility
+#else
+#include "directx/d3d12shader.h"
 
-#include "dxc/DxilContainer/DxilRuntimeReflection.h"
+typedef struct _D3D11_SHADER_INPUT_BIND_DESC
+{
+    LPCSTR                      Name;           // Name of the resource
+    D3D_SHADER_INPUT_TYPE       Type;           // Type of resource (e.g. texture, cbuffer, etc.)
+    UINT                        BindPoint;      // Starting bind point
+    UINT                        BindCount;      // Number of contiguous bind points (for arrays)
+    
+    UINT                        uFlags;         // Input binding flags
+    D3D_RESOURCE_RETURN_TYPE    ReturnType;     // Return type (if texture)
+    D3D_SRV_DIMENSION           Dimension;      // Dimension (if texture)
+    UINT                        NumSamples;     // Number of samples (0 if not MS texture)
+} D3D11_SHADER_INPUT_BIND_DESC;
+CROSS_PLATFORM_UUIDOF(ID3D12ShaderReflection,"5A58797D-A72C-478D-8BA2-EFC6B0EFE88E");
+CROSS_PLATFORM_UUIDOF(ID3D12LibraryReflection,"8E349D19-54DB-4A56-9DC9-119D87BDB804");
+
+#endif
 
 // Remove this workaround once newer version of d3dcommon.h can be compiled against
 #define ADD_16_64_BIT_TYPES
@@ -2819,11 +2837,3 @@ ID3D12FunctionReflection *DxilLibraryReflection::GetFunctionByIndex(INT Function
     return &g_InvalidFunction;
   return m_FunctionVector[FunctionIndex];
 }
-
-#else // LLVM_ON_WIN32
-
-void hlsl::CreateDxcContainerReflection(IDxcContainerReflection **ppResult) {
-  *ppResult = nullptr;
-}
-
-#endif // LLVM_ON_WIN32
